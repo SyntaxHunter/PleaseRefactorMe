@@ -1,62 +1,46 @@
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 public class Bank {
+	final double PERC = 2.54/100;
     
-    void updateBalances(List accounts){
-   	 for (Object object : accounts) {
-   		 double xtra = calculateInterest((BankAccount) object);
-   		 BankAccount acc = (BankAccount) object;
-   		 acc.money = acc.money + xtra;
-   	 }
-   	 
+	void updateBalances(ArrayList<BankAccount> accounts){
+		for (BankAccount object : accounts) {
+			double xtra = calculateInterest(object);
+   		 	object.money = object.money + xtra;
+		}
     }
-    
+   
     double calculateInterest(BankAccount account) {
 
-   	 Date dateOpened = account.date;
-   	 double amount = account.getBalance();
-   	 
-   	 double perc = 2.54/100;
-   	 
-   	 
-   	 Calendar a = Calendar.getInstance(Locale.US);
+    	Date dateOpened = account.date;
+    	double amount = account.getBalance();
+   	 	
+    	// represents current time
+    	Calendar a = Calendar.getInstance(Locale.US);
     	a.setTime(new Date());
+    	//represents time account was created
     	Calendar b = Calendar.getInstance(Locale.US);
     	b.setTime(dateOpened);
-    	int diff = b.get(Calendar.YEAR) - a.get(Calendar.YEAR);
+    	
+    	//difference in years
+    	int diff = a.get(Calendar.YEAR) - b.get(Calendar.YEAR);
+    	
+    	//if month created was greater, add another year
+    	//if day is greater, add another year
+    	//if another year has begun, add another year to interest calculation
     	if (a.get(Calendar.MONTH) > b.get(Calendar.MONTH) ||
-        	(a.get(Calendar.MONTH) == b.get(Calendar.MONTH) && a.get(Calendar.DATE) > b.get(Calendar.DATE))) {
-        	diff--;
+           (a.get(Calendar.MONTH) == b.get(Calendar.MONTH) && a.get(Calendar.DATE) > b.get(Calendar.DATE))) {
+        	diff++;
     	}
-   	 
-   	if(diff<0) diff=-diff;
-       
-     //return  2.54 * amount;
-   	 return diff * perc * amount;
+    	
+    	account.date = a.getTime();
+
+    	//return  2.54 * amount;
+   	 	return diff * PERC * amount;
     }
 
-
-}
-
-
-
-class BankAccount {
-
-    Date date;
-    double money;
-
-    BankAccount(Date date, double money) {
-   	 this.date = date;
-   	 this.money = money;
-    }
-    
-
-    public double getBalance() {
-   	 // TODO Auto-generated method stub
-   	 return money;
-    }
 
 }
